@@ -110,8 +110,8 @@ def get_last_x_days(duration=7):
     #     loop=0)
     for i,im in enumerate(img_list):
         im.save("/export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/"+str(i)+".png")
-    os.system("ffmpeg -framerate 30 -i /export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/%d.png -c:v libx264 -pix_fmt yuv420p /perm/aswo/ops/corona/"+str(origin_now.date())+".mp4")
-    os.system('ffmpeg -framerate 20 -i /export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/%d.png -vf scale=512:-1 /perm/aswo/ops/corona/'+str(origin_now.date())+'.gif')
+    os.system("ffmpeg -y -framerate 30 -i /export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/%d.png -c:v libx264 -pix_fmt yuv420p /perm/aswo/ops/corona/"+str(origin_now.date())+".mp4")
+    os.system('ffmpeg -y -framerate 15 -r 16 -i /export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/%d.png -vf scale=256:-1 /perm/aswo/ops/corona/'+str(origin_now.date())+'.gif')
     os.system("rm -rf /export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/*")
 
 if(len(sys.argv)>1):
