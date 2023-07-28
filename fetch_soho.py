@@ -109,9 +109,10 @@ def get_last_x_days(duration=7):
     #     duration=3, # in milliseconds
     #     loop=0)
     for i,im in enumerate(img_list):
-        im.save("./temp_imgs/"+str(i)+".png")
-    os.system("ffmpeg -framerate 30 -i temp_imgs/%d.png -c:v libx264 -pix_fmt yuv420p /perm/aswo/ops/corona/"+str(origin_now.date())+".mp4")
-    os.system("rm -rf temp_imgs/*")
+        im.save("~/CME_toolkit/temp_imgs/"+str(i)+".png")
+    os.system("ffmpeg -framerate 30 -i ~/CME_toolkit/temp_imgs/%d.png -c:v libx264 -pix_fmt yuv420p /perm/aswo/ops/corona/"+str(origin_now.date())+".mp4")
+    os.system('ffmpeg -framerate 20 -filter_complex "paletteuse,scale=iw*.2:ih*.2" -i ~/CME_toolkit/temp_imgs/%d.png  /perm/aswo/ops/corona/'+str(origin_now.date())+'.gif')
+    os.system("rm -rf ~/CME_toolkit/temp_imgs/*")
 
 if(len(sys.argv)>1):
     argument = sys.argv[1]
