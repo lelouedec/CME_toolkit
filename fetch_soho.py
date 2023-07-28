@@ -86,6 +86,7 @@ def create_gif_from_scoreboard():
 
 def get_last_x_days(duration=7):
     now  = datetime.now()
+    origin_now = now
     img_list = []
     for i in range(0,duration):
         next_date = str(now.year)+str('%02d' % now.month)+str('%02d' % now.day)
@@ -109,7 +110,7 @@ def get_last_x_days(duration=7):
     #     loop=0)
     for i,im in enumerate(img_list):
         im.save("./temp_imgs/"+str(i)+".png")
-    os.system("ffmpeg -framerate 30 -i temp_imgs/%d.png -c:v libx264 -pix_fmt yuv420p /perm/aswo/ops/corona/"+str(now.date())+".mp4")
+    os.system("ffmpeg -framerate 30 -i temp_imgs/%d.png -c:v libx264 -pix_fmt yuv420p /perm/aswo/ops/corona/"+str(origin_now.date())+".mp4")
     os.system("rm -rf temp_imgs/*")
 
 if(len(sys.argv)>1):
