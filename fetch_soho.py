@@ -109,7 +109,7 @@ def get_last_x_days(duration=7):
     #     loop=0)
     for i,im in enumerate(img_list):
         im.save("./temp_imgs/"+str(i)+".png")
-    os.system("ffmpeg -framerate 30 -i temp_imgs/%d.png -c:v libx264 -pix_fmt yuv420p "+str(now.date())+".mp4")
+    os.system("ffmpeg -framerate 30 -i temp_imgs/%d.png -c:v libx264 -pix_fmt yuv420p /perm/aswo/ops/corona/"+str(now.date())+".mp4")
     os.system("rm -rf temp_imgs/*")
 
 if(len(sys.argv)>1):
