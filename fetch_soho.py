@@ -24,7 +24,7 @@ def get_cme_images(cme,nb_frames =204):
     time = "".join(cme[1].split(":")[:-1])
     datetime_object = datetime.strptime(cme[0]+" "+cme[1], '%Y-%m-%d %H:%M:%S')
 
-    urls,times = get_urls_from_date("https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/2023/c3/" + date +"/",datetime_object)
+    urls,times = get_urls_from_date("https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/"+cme[0].split("_")[0]+"/c3/" + date +"/",datetime_object)
     cme_idx  = np.array(times).argmin()
     img_list = []
     for id in range(cme_idx,len(urls)):
@@ -37,8 +37,7 @@ def get_cme_images(cme,nb_frames =204):
             next_day_date = (datetime_object +datetii.timedelta(days=1)).date()
             datetime_object = datetime_object +datetii.timedelta(days=1)
             next_day_date = str(next_day_date.year)+str('%02d' % next_day_date.month)+str('%02d' % next_day_date.day)
-            url_next = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/2023/c3/" +  next_day_date  +"/"
-            print(url_next)
+            url_next = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/"+cme[0].split("_")[0]+"/c3/" +  next_day_date  +"/"
             response = requests.get(url_next)
             ##Check if there is a next day of data to fetch from
             if(response.status_code==200):
@@ -54,12 +53,6 @@ def get_cme_images(cme,nb_frames =204):
         im.save("./temp_imgs/"+str(i)+".png")
     os.system("ffmpeg -framerate 30 -i temp_imgs/%d.png -c:v libx264 -pix_fmt yuv420p "+date+".mp4")
     os.system("rm -rf temp_imgs/*")
-    # img_list[0].save(
-    #         'animation.gif',
-    #         save_all=True,
-    #         append_images=img_list[1:], # append rest of the images
-    #         duration=10, # in milliseconds
-    #         loop=0)
 
 
 def get_cme_dates_from_scoreboard():
@@ -84,13 +77,13 @@ def create_gif_from_scoreboard():
 
 
 
-def get_last_x_days(duration=7):
+def get_last_x_days(duration=7,path_to_save="/perm/aswo/obs/corona/",temp_path="/export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/"):
     now  = datetime.now()
     origin_now = now
     img_list = []
     for i in range(0,duration):
         next_date = str(now.year)+str('%02d' % now.month)+str('%02d' % now.day)
-        url_next = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/2023/c3/" +  next_date  +"/"
+        url_next = "https://soho.nascom.nasa.gov/data/REPROCESSING/Completed/"+str(datetime.today().year)+"/c3/" +  next_date  +"/"
         print(url_next)
         response = requests.get(url_next)
         ##Check if there is a next day of data to fetch from
@@ -101,18 +94,22 @@ def get_last_x_days(duration=7):
         for id in range(0,len(urls)):
             list_im.append(Image.open(requests.get(urls[id], stream=True).raw))
         img_list = list_im + img_list
-    # print(len(img_list))
-    # img_list[0].save(
-    #     'last_2_days.gif',
-    #     save_all=True,
-    #     append_images=img_list[1:], # append rest of the images
-    #     duration=3, # in milliseconds
-    #     loop=0)
+
     for i,im in enumerate(img_list):
-        im.save("/export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/"+str(i)+".png")
-    os.system("ffmpeg -y -framerate 30 -i /export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/%d.png -c:v libx264 -pix_fmt yuv420p /perm/aswo/ops/corona/"+str(origin_now.date())+".mp4")
-    os.system('ffmpeg -y -framerate 15 -r 16 -i /export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/%d.png -vf scale=256:-1 /perm/aswo/ops/corona/'+str(origin_now.date())+'.gif')
-    os.system("rm -rf /export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/*")
+        im.save(temp_path+str(i)+".png")
+
+
+    #save the videos and gifs with only the day's date
+    os.system("ffmpeg -y -framerate 30 -i "+temp_path+"%d.png -c:v libx264 -pix_fmt yuv420p "+path_to_save+"_lasco_c3_current.mp4")
+    os.system("ffmpeg -y -framerate 15 -r 16 -i  "+temp_path+"%d.png -vf scale=512:-1 "+path_to_save+"_lasco_c3_current.gif")
+
+    #save the videos with only the day and time
+    os.system("cp "+path_to_save+"_lasco_c3_current.mp4" +" lasco_c3_"+str(datetime.now()).split(".")[0].replace(" ","_")+".mp4")
+
+
+    os.system("rm -rf "+temp_path+"*")
+
+
 
 if(len(sys.argv)>1):
     argument = sys.argv[1]
