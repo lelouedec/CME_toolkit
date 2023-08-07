@@ -104,7 +104,7 @@ def get_last_x_days(duration=7,path_to_save="/perm/aswo/ops/corona/",temp_path="
     os.system("ffmpeg -y -framerate 15 -r 16 -i  "+temp_path+"%d.png -vf scale=512:-1 "+path_to_save+"lasco_c3_current.gif")
 
     #save the videos with only the day and time
-    os.system("cp "+path_to_save+"lasco_c3_current.mp4" +path_to_save+"lasco_c3_"+str(datetime.now()).split(".")[0].replace(" ","_")+".mp4")
+    os.system("cp "+path_to_save+"lasco_c3_current.mp4  " +path_to_save+"lasco_c3_"+str(datetime.now()).split(".")[0].replace(" ","_")+".mp4")
 
 
     os.system("rm -rf "+temp_path+"*")
