@@ -4,9 +4,9 @@ import numpy as np
 
 
 North_to_south = True
-left_handed    = True
+left_handed    = False
 def direction_from_pts(x1,x2):
-    if(North_to_south):
+    if(not North_to_south):
         direction = np.array([
                     x1[0]-x2[0],
                     x1[1]-x2[1],
@@ -26,7 +26,7 @@ resolution = 1000
 turns = 10
 line_thickness_red = 20.0
 red_arrow_thickness = 0.6
-if(North_to_south):
+if(not North_to_south):
     start = 0
 else:
     start = 0.5*np.pi
@@ -141,7 +141,7 @@ for a in arrows:
 
 
 
-if(North_to_south):
+if(not North_to_south):
     direction = direction_from_pts([X[-1],Y[-1],Z[-1]],[X[-2],Y[-2],Z[-2]])
     fig.add_trace( go.Cone(x=X[-1:], y=Y[-1:],z=Z[-1:], u=[direction[0]], v=[direction[1]], w=[direction[2]],sizemode="absolute",sizeref=red_arrow_thickness,colorscale=[[0, 'red'],[1, 'red']],showscale=False))
     fig.add_trace( go.Scatter3d(x=[0,0], 
