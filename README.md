@@ -2,13 +2,8 @@
 Collection of scripts and code to process, download and manage CME and sattelites data easily.
 
 
-# Creating helicity plot for CME with plotly 
-
-TODO : set intermediary arrows position not with percent of length of line but on the same location no matter what is the length of line or orientation
+# Creating FLux Rope types plot for CME with plotly 
 
 plot generated with :
-North_to_south = True
-left_handed    = False
-(Is it right?)
-![image](https://github.com/lelouedec/CME_toolkit/assets/16105109/a7abbfda-bf6a-453c-8fa0-4777a8dee065)
-
+North_to_south = False,left_handed= True,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=0.6
+![image](https://github.com/lelouedec/CME_toolkit/assets/16105109/00b55a55-db1a-4a41-b487-7e696f39407d)
