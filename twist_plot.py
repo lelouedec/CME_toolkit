@@ -67,7 +67,7 @@ def create_twist(fig,row,col,North_to_south = False,left_handed= True,resolution
                                 y=Y[previous:i],
                                 z=Z[previous:i],
                                 mode='lines',
-                                line=dict(color='rgba(255 ,0 ,0 ,1.0)',width=line_thickness_red)
+                                line=dict(color='rgba(240, 26, 26 ,1.0)',width=line_thickness_red)
                                 ),
                                 row=row, col=col,
                         )
@@ -77,7 +77,7 @@ def create_twist(fig,row,col,North_to_south = False,left_handed= True,resolution
                                 y=Y[previous:i],
                                 z=Z[previous:i],
                                 mode='lines',
-                                line=dict(color='rgba(255 ,0 ,0 ,1.0)',width=line_thickness_red)
+                                line=dict(color='rgba(240, 26, 26 ,1.0)',width=line_thickness_red)
                                 ),
                                 row=row, col=col,
                 )
@@ -88,7 +88,7 @@ def create_twist(fig,row,col,North_to_south = False,left_handed= True,resolution
                                 y=Y[previous:i],
                                 z=Z[previous:i],
                                 mode='lines',
-                                line=dict(color='rgba(255 ,0 ,0 ,0.6)',width=line_thickness_red,dash='dash')
+                                line=dict(color='rgba(240, 26, 26 ,0.6)',width=line_thickness_red,dash='dash')
                                 ),
                                 row=row, col=col,
                         )
@@ -97,7 +97,7 @@ def create_twist(fig,row,col,North_to_south = False,left_handed= True,resolution
                                 y=Y[previous:i],
                                 z=Z[previous:i],
                                 mode='lines',
-                                line=dict(color='rgba(255 ,0 ,0 ,0.6)',width=line_thickness_red,dash='dash')
+                                line=dict(color='rgba(240, 26, 26 ,0.6)',width=line_thickness_red,dash='dash')
                                 ),
                                 row=row, col=col,
                 )
@@ -109,7 +109,7 @@ def create_twist(fig,row,col,North_to_south = False,left_handed= True,resolution
                                 y=Y[previous:i],
                                 z=Z[previous:i],
                                 mode='lines',
-                                line=dict(color='rgba(255 ,0 ,0 ,1.0)',width=line_thickness_red)
+                                line=dict(color='rgba(240, 26, 26 ,1.0)',width=line_thickness_red)
                                 ),
                                 row=row, col=col,
                 )       
@@ -119,7 +119,7 @@ def create_twist(fig,row,col,North_to_south = False,left_handed= True,resolution
                         y=Y[previous:i],
                         z=Z[previous:i],
                         mode='lines',
-                        line=dict(color='rgba(255 ,0 ,0 ,0.6)',width=line_thickness_red,dash='dash')
+                        line=dict(color='rgba(240, 26, 26,0.6)',width=line_thickness_red,dash='dash')
                         ),
                         row=row, col=col,
         )
@@ -128,7 +128,7 @@ def create_twist(fig,row,col,North_to_south = False,left_handed= True,resolution
 
     ########FIND BETTER WAY TO PUT THE ARROWS MID WAY 
         
-
+    lighting_effects = dict(ambient=1.0, diffuse=1.0, roughness = 0.9, specular=0.0, fresnel=5.0)
     start = 20
     for a in range(0,turns):
         for t in range(start,Y.shape[0]):
@@ -144,8 +144,8 @@ def create_twist(fig,row,col,North_to_south = False,left_handed= True,resolution
                                     w=dir0[2],
                                     sizemode="absolute",
                                     sizeref=red_arrow_thickness,
-                                    colorscale=[[0, 'red'],[1, 'red']],
-                                    showscale=False),
+                                    colorscale=[[0, 'rgb(254, 0, 0)'],[1, 'rgb(254, 0, 0)']],
+                                    showscale=False,lighting=lighting_effects,lightposition=dict(x=0,y=0.0,z=0)),
                                     row=row, col=col,
                                 )
                 
@@ -156,13 +156,15 @@ def create_twist(fig,row,col,North_to_south = False,left_handed= True,resolution
 
     if ((North_to_south and left_handed) or (not North_to_south and not left_handed)):
         direction = direction_from_pts([X[-1],Y[-1],Z[-1]],[X[-2],Y[-2],Z[-2]],North_to_south,left_handed)
-        fig.add_trace( go.Cone(x=X[-1:], y=Y[-1:],z=Z[-1:], u=[direction[0]], v=[direction[1]], w=[direction[2]],sizemode="absolute",sizeref=red_arrow_thickness,colorscale=[[0, 'red'],[1, 'red']],showscale=False),
-                                row=row, col=col)
+        fig.add_trace( go.Cone(x=X[-1:], y=Y[-1:],z=Z[-1:], u=[direction[0]], v=[direction[1]], w=[direction[2]],sizemode="absolute",sizeref=red_arrow_thickness,colorscale=[[0, 'rgb(254, 0, 0)'],[1, 'rgb(254, 0, 0)']],
+                                    showscale=False,lighting=lighting_effects,lightposition=dict(x=0,y=1.25,z=0)),
+                                    row=row, col=col,)
         
     else:
         direction = direction_from_pts([X[1],Y[1],Z[1]],[X[0],Y[0],Z[0]],North_to_south,left_handed)
-        fig.add_trace( go.Cone(x=[X[0]], y=[Y[0]],z=[Z[0]], u=[direction[0]], v=[direction[1]], w=[direction[2]],sizemode="absolute",sizeref=red_arrow_thickness,colorscale=[[0, 'red'],[1, 'red']],showscale=False),
-                                row=row, col=col,)
+        fig.add_trace( go.Cone(x=[X[0]], y=[Y[0]],z=[Z[0]], u=[direction[0]], v=[direction[1]], w=[direction[2]],sizemode="absolute",sizeref=red_arrow_thickness,colorscale=[[0, 'rgb(254, 0, 0)'],[1, 'rgb(254, 0, 0)']],
+                                    showscale=False,lighting=lighting_effects,lightposition=dict(x=0,y=1.25,z=0)),
+                                    row=row, col=col,)
 
 
     if((North_to_south and not left_handed) or (not North_to_south and left_handed)):
@@ -223,15 +225,15 @@ def create_twist(fig,row,col,North_to_south = False,left_handed= True,resolution
     fig.get_subplot(row=row,col=col).zaxis.backgroundcolor = 'white'
     fig.get_subplot(row=row,col=col).zaxis.title = ''
 
-
+    fig.update_traces(showlegend=False, selector=dict(type='scatter3d'))
     return fig
 
 
 
 if __name__ == '__main__':
     fig = make_subplots(4,1,specs =[[{'type': 'scene'}],[{'type': 'scene'}],[{'type': 'scene'}],[{'type': 'scene'}]])
-    fig = create_twist(fig,row=1,col=1,North_to_south = True,left_handed= False,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=1.3,black_arrow_thickness=1.3)
-    fig = create_twist(fig,row=2,col=1,North_to_south = True,left_handed= True,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=1.3,black_arrow_thickness=1.3)
-    fig = create_twist(fig,row=3,col=1,North_to_south = False,left_handed= True,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=1.3,black_arrow_thickness=1.3)
-    fig = create_twist(fig,row=4,col=1,North_to_south = False,left_handed= False,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=1.3,black_arrow_thickness=1.3)
+    fig = create_twist(fig,row=1,col=1,North_to_south = True,left_handed= False,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=1.4,black_arrow_thickness=1.4)
+    fig = create_twist(fig,row=2,col=1,North_to_south = True,left_handed= True,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=1.4,black_arrow_thickness=1.4)
+    fig = create_twist(fig,row=3,col=1,North_to_south = False,left_handed= True,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=1.4,black_arrow_thickness=1.4)
+    fig = create_twist(fig,row=4,col=1,North_to_south = False,left_handed= False,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=1.4,black_arrow_thickness=1.4)
     fig.show() 
