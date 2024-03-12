@@ -1,7 +1,7 @@
 import plotly.graph_objs as go
 import plotly.express as px
 import numpy as np 
-
+from plotly.subplots import make_subplots
 
 
 def direction_from_pts(x1,x2,North_to_south):
@@ -20,7 +20,7 @@ def direction_from_pts(x1,x2,North_to_south):
     direction = direction / np.linalg.norm(direction)
     return direction
 
-def create_twist(fig,North_to_south = False,left_handed= True,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=0.6):
+def create_twist(fig,row,col,North_to_south = False,left_handed= True,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=0.6):
     if(not North_to_south):
         start = 0
     else:
@@ -63,7 +63,8 @@ def create_twist(fig,North_to_south = False,left_handed= True,resolution = 1000,
                                 z=Z[previous:i],
                                 mode='lines',
                                 line=dict(color='rgba(255 ,0 ,0 ,1.0)',width=line_thickness_red)
-                                )
+                                ),
+                                row=row, col=col,
                         )
                 added = True
             else:
@@ -72,7 +73,8 @@ def create_twist(fig,North_to_south = False,left_handed= True,resolution = 1000,
                                 z=Z[previous:i],
                                 mode='lines',
                                 line=dict(color='rgba(255 ,0 ,0 ,1.0)',width=line_thickness_red)
-                                )
+                                ),
+                                row=row, col=col,
                 )
             previous = i
         elif(Y[i]>=0 and Y[i-1]<0):
@@ -82,7 +84,8 @@ def create_twist(fig,North_to_south = False,left_handed= True,resolution = 1000,
                                 z=Z[previous:i],
                                 mode='lines',
                                 line=dict(color='rgba(255 ,0 ,0 ,0.6)',width=line_thickness_red,dash='dash')
-                                )
+                                ),
+                                row=row, col=col,
                         )
             else:
                 fig.add_trace(go.Scatter3d(x=X[previous:i], 
@@ -90,7 +93,8 @@ def create_twist(fig,North_to_south = False,left_handed= True,resolution = 1000,
                                 z=Z[previous:i],
                                 mode='lines',
                                 line=dict(color='rgba(255 ,0 ,0 ,0.6)',width=line_thickness_red,dash='dash')
-                                )
+                                ),
+                                row=row, col=col,
                 )
             previous = i
 
@@ -101,7 +105,8 @@ def create_twist(fig,North_to_south = False,left_handed= True,resolution = 1000,
                                 z=Z[previous:i],
                                 mode='lines',
                                 line=dict(color='rgba(255 ,0 ,0 ,1.0)',width=line_thickness_red)
-                                )
+                                ),
+                                row=row, col=col,
                 )       
 
     else:
@@ -110,7 +115,8 @@ def create_twist(fig,North_to_south = False,left_handed= True,resolution = 1000,
                         z=Z[previous:i],
                         mode='lines',
                         line=dict(color='rgba(255 ,0 ,0 ,0.6)',width=line_thickness_red,dash='dash')
-                        )
+                        ),
+                        row=row, col=col,
         )
 
 
@@ -134,7 +140,9 @@ def create_twist(fig,North_to_south = False,left_handed= True,resolution = 1000,
                                     sizemode="absolute",
                                     sizeref=red_arrow_thickness,
                                     colorscale=[[0, 'red'],[1, 'red']],
-                                    showscale=False))
+                                    showscale=False),
+                                    row=row, col=col,
+                                )
                 
                 start = t+1
         
@@ -146,27 +154,33 @@ def create_twist(fig,North_to_south = False,left_handed= True,resolution = 1000,
 
     if(not North_to_south):
         direction = direction_from_pts([X[-1],Y[-1],Z[-1]],[X[-2],Y[-2],Z[-2]],North_to_south)
-        fig.add_trace( go.Cone(x=X[-1:], y=Y[-1:],z=Z[-1:], u=[direction[0]], v=[direction[1]], w=[direction[2]],sizemode="absolute",sizeref=red_arrow_thickness,colorscale=[[0, 'red'],[1, 'red']],showscale=False))
+        fig.add_trace( go.Cone(x=X[-1:], y=Y[-1:],z=Z[-1:], u=[direction[0]], v=[direction[1]], w=[direction[2]],sizemode="absolute",sizeref=red_arrow_thickness,colorscale=[[0, 'red'],[1, 'red']],showscale=False),
+                                row=row, col=col,)
         fig.add_trace( go.Scatter3d(x=[0,0], 
                     y=[0,0],
                     z=[-1,turns+2],
                     mode='lines',
                     line=dict(color='black',width=15)
-                    )
+                    ),
+                    row=row, col=col,
                 )
-        fig.add_trace( go.Cone(x=[0], y=[0],z=[turns+2], u=[0],v=[0], w=[1],sizemode="absolute",sizeref=0.55,colorscale=[[0, 'black'],[1, 'black']],showscale=False))
+        fig.add_trace( go.Cone(x=[0], y=[0],z=[turns+2], u=[0],v=[0], w=[1],sizemode="absolute",sizeref=0.55,colorscale=[[0, 'black'],[1, 'black']],showscale=False),
+                                row=row, col=col,)
 
     else:
         direction = direction_from_pts([X[1],Y[1],Z[1]],[X[0],Y[0],Z[0]])
-        fig.add_trace( go.Cone(x=[X[0]], y=[Y[0]],z=[Z[0]], u=[direction[0]], v=[direction[1]], w=[direction[2]],sizemode="absolute",sizeref=red_arrow_thickness,colorscale=[[0, 'red'],[1, 'red']],showscale=False))
+        fig.add_trace( go.Cone(x=[X[0]], y=[Y[0]],z=[Z[0]], u=[direction[0]], v=[direction[1]], w=[direction[2]],sizemode="absolute",sizeref=red_arrow_thickness,colorscale=[[0, 'red'],[1, 'red']],showscale=False),
+                                row=row, col=col,)
         fig.add_trace( go.Scatter3d(x=[0,0], 
                     y=[0,0],
                     z=[-2,turns+2],
                     mode='lines',
                     line=dict(color='black',width=15)
-                    )
+                    ),
+                                row=row, col=col,
                 )
-        fig.add_trace( go.Cone(x=[0], y=[0],z=[-2], u=[0],v=[0], w=[-1],sizemode="absolute",sizeref=0.55,colorscale=[[0, 'black'],[1, 'black']],showscale=False))
+        fig.add_trace( go.Cone(x=[0], y=[0],z=[-2], u=[0],v=[0], w=[-1],sizemode="absolute",sizeref=0.55,colorscale=[[0, 'black'],[1, 'black']],showscale=False),
+                                row=row, col=col,)
 
 
     # fig2 =
@@ -175,17 +189,37 @@ def create_twist(fig,North_to_south = False,left_handed= True,resolution = 1000,
         center=dict(x=0, y=0, z=0),
         eye=dict(x=0, y=1.5, z=0)
     )
-    fig.update_layout(scene_camera=camera, title="prout",scene = dict(  xaxis = dict(showgrid = False,showticklabels = False,backgroundcolor ="white"),
-                                                                        yaxis = dict(showgrid = False,showticklabels = False,backgroundcolor ="white"),
-                                                                        zaxis = dict(showgrid = False,showticklabels = False,backgroundcolor ="white")
-                                                                        )
-                )
+    # fig.update_layout(scene_camera=camera, title="prout",scene = dict(  xaxis = dict(showgrid = False,showticklabels = False,backgroundcolor ="white"),
+    #                                                                     yaxis = dict(showgrid = False,showticklabels = False,backgroundcolor ="white"),
+    #                                                                     zaxis = dict(showgrid = False,showticklabels = False,backgroundcolor ="white")
+    #                                                                     )
+    #             )
+    # fig.update_xaxes(showgrid = False,showticklabels = False,backgroundcolor ="white", row=row, col=row)
+    # fig.update_yaxes(showgrid = False,showticklabels = False,backgroundcolor ="white", row=row, col=row)
+    # fig.update_zaxes(showgrid = False,showticklabels = False,backgroundcolor ="white", row=row, col=row)
+    fig.get_subplot(row=row,col=col).camera = camera
+    fig.get_subplot(row=row,col=col).xaxis.showgrid = False
+    fig.get_subplot(row=row,col=col).xaxis.showticklabels = False
+    fig.get_subplot(row=row,col=col).xaxis.backgroundcolor = 'white'
+    fig.get_subplot(row=row,col=col).xaxis.title = ''
+
+    fig.get_subplot(row=row,col=col).yaxis.showgrid = False
+    fig.get_subplot(row=row,col=col).yaxis.showticklabels = False
+    fig.get_subplot(row=row,col=col).yaxis.backgroundcolor = 'white'
+    fig.get_subplot(row=row,col=col).yaxis.title = ''
+
+
+    fig.get_subplot(row=row,col=col).zaxis.showgrid = False
+    fig.get_subplot(row=row,col=col).zaxis.showticklabels = False
+    fig.get_subplot(row=row,col=col).zaxis.backgroundcolor = 'white'
+    fig.get_subplot(row=row,col=col).zaxis.title = ''
+
 
     return fig
 
 
 
 if __name__ == '__main__':
-    fig = go.Figure()
-    fig = create_twist(fig,North_to_south = False,left_handed= True,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=0.6)
+    fig = make_subplots(1,1,specs =[[{'type': 'scene'}]])
+    fig = create_twist(fig,row=1,col=1,North_to_south = False,left_handed= True,resolution = 1000,turns = 10,line_thickness_red=20.0,red_arrow_thickness=0.6)
     fig.show() 
