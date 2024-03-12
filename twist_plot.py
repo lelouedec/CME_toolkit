@@ -3,8 +3,8 @@ import plotly.express as px
 import numpy as np 
 
 
-North_to_south = True
-left_handed    = False
+North_to_south = False
+left_handed    = True
 def direction_from_pts(x1,x2):
     if(not North_to_south):
         direction = np.array([
@@ -123,21 +123,29 @@ else:
 ########FIND BETTER WAY TO PUT THE ARROWS MID WAY 
     
 
-arrows = [10.75,19.65,28.55,37.45,46.35,55.25,64.15,73.05,81.95,90.85]
+start = 20
+for a in range(0,turns):
+    for t in range(start,Y.shape[0]):
+        if(np.abs(Y[t]- Y.max()) <0.0003):
+            dir0= direction_from_pts([X[t+1:t+2],Y[t+1:t+2],Z[t+1:t+2]],
+                         [X[t:t+1],Y[t:t+1],Z[t:t+1]])
+    
+            fig.add_trace( go.Cone(x=X[t:t+1], 
+                                y=Y[t:t+1],
+                                z=Z[t:t+1], 
+                                u=dir0[0], 
+                                v=dir0[1], 
+                                w=dir0[2],
+                                sizemode="absolute",
+                                sizeref=red_arrow_thickness,
+                                colorscale=[[0, 'red'],[1, 'red']],
+                                showscale=False))
+            
+            start = t+1
+    
 
-for a in arrows:
-    dir0= direction_from_pts([X[int(a*(resolution/100))+1:int(a*(resolution/100))+2],Y[int(a*(resolution/100))+1:int(a*(resolution/100))+2],Z[int(a*(resolution/100))+1:int(a*(resolution/100))+2]],
-                         [X[int(a*(resolution/100)):int(a*(resolution/100))+1],Y[int(a*(resolution/100)):int(a*(resolution/100))+1],Z[int(a*(resolution/100)):int(a*(resolution/100))+1]])
-    fig.add_trace( go.Cone(x=X[int(a*(resolution/100)):int(a*(resolution/100))+1], 
-                        y=Y[int(a*(resolution/100)):int(a*(resolution/100))+1],
-                        z=Z[int(a*(resolution/100)):int(a*(resolution/100))+1], 
-                        u=dir0[0], 
-                        v=dir0[1], 
-                        w=dir0[2],
-                        sizemode="absolute",
-                        sizeref=red_arrow_thickness,
-                        colorscale=[[0, 'red'],[1, 'red']],
-                        showscale=False))
+
+
 
 
 
