@@ -6,6 +6,9 @@ import numpy as np
 from PIL import Image
 import sys
 import os
+import matplotlib.pyplot as plt 
+
+
 
 def get_urls_from_date(url,time_origin):
     soup = BeautifulSoup(requests.get(url).text, 'html.parser').find_all('tr')[3:-1]
@@ -113,6 +116,49 @@ def get_last_x_days(duration=7,path_to_save="/perm/aswo/ops/corona/",temp_path="
 
     os.system("rm -rf "+temp_path+"*")
 
+def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/",temp_path="/export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/"):
+    now  = datetime.now()
+    origin_now = now
+    img_list = []
+    for i in range(0,duration):
+        next_date = str(now.year)+"/"+str('%02d' % now.month)+"/"+str('%02d' % now.day)
+
+        url_next = "https://sdo.oma.be/data/aia_quicklook_image/"+next_date+"/"
+        soup = BeautifulSoup(requests.get(url_next).text, 'html.parser').find_all('tr')[3:-1]
+        urls = []
+        for s in soup:
+            time_H = s.find_all("a")[0].get('href')
+            urls_next_hours = url_next + time_H
+            
+            soup = BeautifulSoup(requests.get(urls_next_hours).text, 'html.parser').find_all('tr')[3:-1]
+            
+            for s in soup:
+                lnk = urls_next_hours+s.find_all("a")[0].get('href')
+                if(lnk.endswith("0193.quicklook.png")):
+                    print(lnk)
+                    urls.append(lnk)
+        list_im = []
+        print(len(urls))
+        for id in range(0,len(urls)):
+            list_im.append(Image.open(requests.get(urls[id], stream=True).raw))
+           
+        img_list = list_im + img_list
+
+    for i,im in enumerate(img_list):
+        im.save(temp_path+str(i)+".png")
+
+
+    #save the videos and gifs with only the day's date
+    os.system("ffmpeg -y -framerate 30 -i "+temp_path+"%d.png -c:v libx264 -pix_fmt yuv420p "+path_to_save+"SDO_193_current.mp4")
+    # os.system("ffmpeg -y -framerate 15 -r 16 -i  "+temp_path+"%d.png -vf scale=512:-1 "+path_to_save+"SDO_193_current.gif")
+    os.system('ffmpeg -y -i '+path_to_save+'SDO_193_current.mp4 -filter_complex "fps=9,scale=300:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=20[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'SDO_193_current_lowres.gif')
+    os.system('ffmpeg -y -i '+path_to_save+'SDO_193_current.mp4 -filter_complex "fps=9,scale=400:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=60[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'SDO_193_current_midres.gif')
+    os.system('ffmpeg -y -i '+path_to_save+'SDO_193_current.mp4 -filter_complex "fps=9,scale=512:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=100[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'SDO_193_current_highres.gif')
+
+
+    #save the videos with only the day and time
+    os.system("cp "+path_to_save+"SDO_193_current.mp4  " +path_to_save+"SDO_193_"+datetime.today().date().strftime('%y-%m-%d')+".mp4")
+    os.system("rm -rf "+temp_path+"*")
 
 
 if(len(sys.argv)>1):
@@ -121,6 +167,7 @@ if(len(sys.argv)>1):
         create_gif_from_scoreboard()
     elif(argument=="lastd"):
         get_last_x_days(7)
+        get_last_x_days_SDO(7)
     else:
         print("UNRECOGNIZED ARGUMENT")
 else:
