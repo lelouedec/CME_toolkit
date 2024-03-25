@@ -137,6 +137,7 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/",temp_pa
                 if(lnk.endswith("0193.quicklook.png")):
                     print(lnk)
                     urls.append(lnk)
+        now = now - datetii.timedelta(days=1)
         list_im = []
         print(len(urls))
         for id in range(0,len(urls)):
