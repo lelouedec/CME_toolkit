@@ -153,7 +153,7 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/",temp_pa
     os.system("ffmpeg -y -framerate 30 -i "+temp_path+"%d.png -c:v libx264 -pix_fmt yuv420p "+path_to_save+"SDO_193_current.mp4")
     # os.system("ffmpeg -y -framerate 15 -r 16 -i  "+temp_path+"%d.png -vf scale=512:-1 "+path_to_save+"SDO_193_current.gif")
     os.system('ffmpeg -y -i '+path_to_save+'SDO_193_current.mp4 -filter_complex "fps=9,scale=300:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=20[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'SDO_193_current_lowres.gif')
-    os.system('ffmpeg -y -i '+path_to_save+'SDO_193_current.mp4 -filter_complex "fps=9,scale=400:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=60[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'SDO_193_current_midres.gif')
+    os.system('ffmpeg -y -i '+path_to_save+'SDO_193_current.mp4 -filter_complex "fps=9,scale=350:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=40[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'SDO_193_current_midres.gif')
     os.system('ffmpeg -y -i '+path_to_save+'SDO_193_current.mp4 -filter_complex "fps=9,scale=512:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=100[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'SDO_193_current_highres.gif')
 
 
