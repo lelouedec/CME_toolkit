@@ -92,6 +92,8 @@ def get_last_x_days(duration=7,path_to_save="/perm/aswo/ops/corona/",temp_path="
         ##Check if there is a next day of data to fetch from
         if(response.status_code==200):
             urls,times = get_urls_from_date(url_next,now)
+        else:
+            urls = []
         now = now - datetii.timedelta(days=1)
         list_im = []
         for id in range(0,len(urls)):
@@ -101,22 +103,22 @@ def get_last_x_days(duration=7,path_to_save="/perm/aswo/ops/corona/",temp_path="
     for i,im in enumerate(img_list):
         im.save(temp_path+str(i)+".png")
 
+    if(len(img_list)>1):
+        #save the videos and gifs with only the day's date
+        os.system("ffmpeg -y -framerate 30 -i "+temp_path+"%d.png -c:v libx264 -pix_fmt yuv420p "+path_to_save+"lasco_c3_current.mp4")
+        # os.system("ffmpeg -y -framerate 15 -r 16 -i  "+temp_path+"%d.png -vf scale=512:-1 "+path_to_save+"lasco_c3_current.gif")
+        os.system('ffmpeg -y -i '+path_to_save+'lasco_c3_current.mp4 -filter_complex "fps=9,scale=300:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=20[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'lasco_c3_current_lowres.gif')
+        os.system('ffmpeg -y -i '+path_to_save+'lasco_c3_current.mp4 -filter_complex "fps=9,scale=400:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=60[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'lasco_c3_current_midres.gif')
+        os.system('ffmpeg -y -i '+path_to_save+'lasco_c3_current.mp4 -filter_complex "fps=9,scale=512:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=100[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'lasco_c3_current_highres.gif')
 
-    #save the videos and gifs with only the day's date
-    os.system("ffmpeg -y -framerate 30 -i "+temp_path+"%d.png -c:v libx264 -pix_fmt yuv420p "+path_to_save+"lasco_c3_current.mp4")
-    # os.system("ffmpeg -y -framerate 15 -r 16 -i  "+temp_path+"%d.png -vf scale=512:-1 "+path_to_save+"lasco_c3_current.gif")
-    os.system('ffmpeg -y -i '+path_to_save+'lasco_c3_current.mp4 -filter_complex "fps=9,scale=300:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=20[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'lasco_c3_current_lowres.gif')
-    os.system('ffmpeg -y -i '+path_to_save+'lasco_c3_current.mp4 -filter_complex "fps=9,scale=400:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=60[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'lasco_c3_current_midres.gif')
-    os.system('ffmpeg -y -i '+path_to_save+'lasco_c3_current.mp4 -filter_complex "fps=9,scale=512:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=100[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'lasco_c3_current_highres.gif')
 
-
-    #save the videos with only the day and time
-    os.system("cp "+path_to_save+"lasco_c3_current.mp4  " +path_to_save+"lasco_c3_"+datetime.today().date().strftime('%y-%m-%d')+".mp4")
+        #save the videos with only the day and time
+        os.system("cp "+path_to_save+"lasco_c3_current.mp4  " +path_to_save+"lasco_c3_"+datetime.today().date().strftime('%y-%m-%d')+".mp4")
 
 
     os.system("rm -rf "+temp_path+"*")
 
-def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/",temp_path="/export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/"):
+def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/",temp_path="/export/home/aswo/jlelouedec/CME_toolkit/temp_imgs_SDO/"):
     now  = datetime.now()
     origin_now = now
     img_list = []
@@ -153,7 +155,7 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/",temp_pa
     os.system("ffmpeg -y -framerate 30 -i "+temp_path+"%d.png -c:v libx264 -pix_fmt yuv420p "+path_to_save+"SDO_193_current.mp4")
     # os.system("ffmpeg -y -framerate 15 -r 16 -i  "+temp_path+"%d.png -vf scale=512:-1 "+path_to_save+"SDO_193_current.gif")
     os.system('ffmpeg -y -i '+path_to_save+'SDO_193_current.mp4 -filter_complex "fps=9,scale=300:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=20[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'SDO_193_current_lowres.gif')
-    os.system('ffmpeg -y -i '+path_to_save+'SDO_193_current.mp4 -filter_complex "fps=9,scale=400:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=60[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'SDO_193_current_midres.gif')
+    os.system('ffmpeg -y -i '+path_to_save+'SDO_193_current.mp4 -filter_complex "fps=9,scale=350:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=35[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'SDO_193_current_midres.gif')
     os.system('ffmpeg -y -i '+path_to_save+'SDO_193_current.mp4 -filter_complex "fps=9,scale=512:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=100[p];[s1][p]paletteuse=dither=bayer" '+path_to_save+'SDO_193_current_highres.gif')
 
 
@@ -167,7 +169,7 @@ if(len(sys.argv)>1):
     if(argument=="scoreboard"):
         create_gif_from_scoreboard()
     elif(argument=="lastd"):
-        #get_last_x_days(7)
+        get_last_x_days(7)
         get_last_x_days_SDO(7)
     else:
         print("UNRECOGNIZED ARGUMENT")
