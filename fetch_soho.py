@@ -127,7 +127,6 @@ if(len(sys.argv)>1):
         create_gif_from_scoreboard()
     elif(argument=="lastd"):
         get_last_x_days(7)
-        get_last_x_days_SDO(7)
     else:
         print("UNRECOGNIZED ARGUMENT")
 else:
