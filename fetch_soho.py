@@ -80,7 +80,7 @@ def create_gif_from_scoreboard():
 
 
 
-def get_last_x_days(duration=7,path_to_save="/perm/aswo/ops/corona/",temp_path="/export/home/aswo/jlelouedec/CME_toolkit/temp_imgs/"):
+def get_last_x_days(duration=7,path_to_save="/perm/aswo/ops/corona/",temp_path="/scratch/aswo/jlelouedec/temp_imgs"):
     now  = datetime.now()
     origin_now = now
     img_list = []
