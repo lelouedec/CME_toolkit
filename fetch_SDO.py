@@ -101,7 +101,7 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
 
     #save the videos with only the day and time
     os.system("cp "+path_to_save+"SDO_193_current.mp4  " +path_to_save+"SDO_193_"+datetime.today().date().strftime('%y-%m-%d')+".mp4")
-    # os.system("rm -rf "+temp_path+"*")
+    os.system("rm -rf "+temp_path+"*")
 
 
 
