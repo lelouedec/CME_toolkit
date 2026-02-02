@@ -50,10 +50,11 @@ def multi_processes_dl(i):
 def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
     now  = datetime.now() - datetii.timedelta(days=duration)
     cnt = 0
-    for i in range(0,duration):
+    for i in range(0,duration+1):
         next_date = str(now.year)+"/"+str('%02d' % now.month)+"/"+str('%02d' % now.day)
         # https://sdo.oma.be/data/aia_quicklook/0193/2026/01/20/
         url_next = "https://sdo.oma.be/data/aia_quicklook/0193/"+next_date+"/"
+        print(url_next)
         soup = BeautifulSoup(requests.get(url_next).text, 'html.parser').find_all('a')
         urls = []
         for s in soup:
@@ -75,7 +76,7 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
         pool.map(multi_processes_dl, np.arange(0,len(urls),1))
         pool.close()
         pool.join()
-        cnt =  + len(urls)
+        cnt =  cnt + len(urls)
         now = now + datetii.timedelta(days=1)
 
     # files = natsorted(glob.glob(temp_path+"/*.fits"))
