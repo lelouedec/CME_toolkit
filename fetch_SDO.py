@@ -26,7 +26,26 @@ temp_path = "/lscratch/aswo/ops/sdo/"
 def multi_processes_dl(i):
     # img = Image.open(requests.get(global_urls1[i], stream=True).raw)
     # img.save(temp_path+str(global_start+i)+".fts")
-    wget.download(global_urls1[i],out = temp_path+global_urls1[i].split("/")[-1])
+    f = temp_path+global_urls1[i].split("/")[-1]
+    wget.download(global_urls1[i],out = f)
+
+    aiamap = sunpy.map.Map(f)
+    fig = plt.figure(frameon=False)
+    ax = plt.axes([0, 0, 1, 1])
+    # Disable the axis
+    ax.set_axis_off()
+    
+    norm = aiamap.plot_settings['norm']
+    norm.vmin, norm.vmax = np.percentile(aiamap.data, [5, 99.9])
+    ax.imshow(aiamap.data,
+            norm=norm,
+            cmap=aiamap.plot_settings['cmap'],
+            origin="lower")
+    plt.text(10, 24, aiamap.fits_header["DATE-OBS"], dict(size=7,color="white"))
+    plt.savefig(f.replace("fits","png"))
+    # plt.show()
+    plt.close("all")
+    os.system("rm "+f)
 
 def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
     now  = datetime.now()
@@ -59,25 +78,10 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
         pool.close()
         pool.join()
 
-    files = natsorted(glob.glob(temp_path+"/*.fits"))
-    for f in files:
-        print(f)
-        aiamap = sunpy.map.Map(f)
-        fig = plt.figure(frameon=False)
-        ax = plt.axes([0, 0, 1, 1])
-        # Disable the axis
-        ax.set_axis_off()
+    # files = natsorted(glob.glob(temp_path+"/*.fits"))
+    # for f in files:
+    #     print(f)
         
-        norm = aiamap.plot_settings['norm']
-        norm.vmin, norm.vmax = np.percentile(aiamap.data, [5, 99.9])
-        ax.imshow(aiamap.data,
-                norm=norm,
-                cmap=aiamap.plot_settings['cmap'],
-                origin="lower")
-        plt.text(10, 24, aiamap.fits_header["DATE-OBS"], dict(size=7,color="white"))
-        plt.savefig(f.replace("fits","png"))
-        # plt.show()
-        plt.close("all")
 
 
         
