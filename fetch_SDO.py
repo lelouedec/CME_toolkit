@@ -29,8 +29,9 @@ def multi_processes_dl(i):
     f = temp_path+global_urls1[i].split("/")[-1]
     wget.download(global_urls1[i],out = f)
 
+    my_dpi = 300
     aiamap = sunpy.map.Map(f)
-    fig = plt.figure(frameon=False)
+    fig = plt.figure(frameon=False,figsize=(1024/my_dpi, 1024/my_dpi), dpi=my_dpi)
     ax = plt.axes([0, 0, 1, 1])
     # Disable the axis
     ax.set_axis_off()
@@ -42,7 +43,7 @@ def multi_processes_dl(i):
             cmap=aiamap.plot_settings['cmap'],
             origin="lower")
     plt.text(10, 24, aiamap.fits_header["DATE-OBS"], dict(size=7,color="white"))
-    plt.savefig(temp_path+str(global_start+i)+".png")
+    plt.savefig(temp_path+str(global_start+i)+".png", dpi=my_dpi)
     plt.tight_layout()
     # plt.show()
     plt.close("all")
