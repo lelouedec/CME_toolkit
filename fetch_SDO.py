@@ -43,6 +43,7 @@ def multi_processes_dl(i):
             origin="lower")
     plt.text(10, 24, aiamap.fits_header["DATE-OBS"], dict(size=7,color="white"))
     plt.savefig(temp_path+str(global_start+i)+".png")
+    plt.tight_layout()
     # plt.show()
     plt.close("all")
     os.system("rm "+f)
