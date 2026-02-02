@@ -59,9 +59,9 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
         pool.map(multi_processes_dl, np.arange(0,len(urls),1))
         pool.close()
         pool.join()
-        
+
         sdoaia193 = matplotlib.colormaps['sdoaia193']
-        files = natsorted(glob.glob(temp_path+"/*"))
+        files = natsorted(glob.glob(temp_path+"/*.fts"))
         for f in files:
             aiamap = sunpy.map.Map(f)
             fig = plt.figure(frameon=False)
