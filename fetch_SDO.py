@@ -42,7 +42,7 @@ def multi_processes_dl(i):
             cmap=aiamap.plot_settings['cmap'],
             origin="lower")
     plt.text(10, 24, aiamap.fits_header["DATE-OBS"], dict(size=7,color="white"))
-    plt.savefig(f.replace("fits","png"))
+    plt.savefig(temp_path+str(global_start+i)+".png")
     # plt.show()
     plt.close("all")
     os.system("rm "+f)
@@ -77,6 +77,7 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
         pool.map(multi_processes_dl, np.arange(0,len(urls),1))
         pool.close()
         pool.join()
+        cnt =  + len(urls)
 
     # files = natsorted(glob.glob(temp_path+"/*.fits"))
     # for f in files:
@@ -87,7 +88,7 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
         
         
            
-        cnt = cnt + len(urls)
+        
 
 
     #save the videos and gifs with only the day's date
