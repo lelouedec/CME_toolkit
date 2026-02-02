@@ -10,7 +10,6 @@ import wget
 import multiprocessing as mp
 from natsort import natsorted
 import glob
-from astropy.io import fits 
 import matplotlib.pyplot as plt 
 import sunpy.visualization.colormaps as cm
 import matplotlib 
@@ -27,7 +26,7 @@ temp_path = "/lscratch/aswo/ops/sdo/"
 def multi_processes_dl(i):
     # img = Image.open(requests.get(global_urls1[i], stream=True).raw)
     # img.save(temp_path+str(global_start+i)+".fts")
-    wget.download(global_urls1[i],out = temp_path+str(global_start+i)+".fts")
+    wget.download(global_urls1[i],out = temp_path+global_urls1[i].split("/")[-1])
 
 def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
     now  = datetime.now()
@@ -61,8 +60,9 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
         pool.join()
 
         sdoaia193 = matplotlib.colormaps['sdoaia193']
-        files = natsorted(glob.glob(temp_path+"/*.fts"))
+        files = natsorted(glob.glob(temp_path+"/*.fits"))
         for f in files:
+            print(f)
             aiamap = sunpy.map.Map(f)
             fig = plt.figure(frameon=False)
             ax = plt.axes([0, 0, 1, 1])
@@ -75,7 +75,9 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
                     norm=norm,
                     cmap=aiamap.plot_settings['cmap'],
                     origin="lower")
+            plt.text(10, 24, aiamap.fits_header["DATE-OBS"], dict(size=7,color="white"))
             plt.savefig(f.replace("fts","png"))
+            # plt.show()
             plt.close("all")
 
 
