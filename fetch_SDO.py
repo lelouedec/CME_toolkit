@@ -76,7 +76,7 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
                     cmap=aiamap.plot_settings['cmap'],
                     origin="lower")
             plt.text(10, 24, aiamap.fits_header["DATE-OBS"], dict(size=7,color="white"))
-            plt.savefig(f.replace("fts","png"))
+            plt.savefig(f.replace("fits","png"))
             # plt.show()
             plt.close("all")
 
