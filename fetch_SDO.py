@@ -8,15 +8,26 @@ import sys
 import os
 import wget
 import multiprocessing as mp
+from natsort import natsorted
+import glob
+from astropy.io import fits 
+import matplotlib.pyplot as plt 
+import sunpy.visualization.colormaps as cm
+import matplotlib 
+import sunpy
+import sunpy.map
+import astropy.units as u
 
 
 global_urls1 = None
 global_start = 0
 temp_path = "/lscratch/aswo/ops/sdo/"
+# temp_path = "./tmp/"
 
 def multi_processes_dl(i):
-    img = Image.open(requests.get(global_urls1[i], stream=True).raw)
-    img.save(temp_path+str(global_start+i)+".png")
+    # img = Image.open(requests.get(global_urls1[i], stream=True).raw)
+    # img.save(temp_path+str(global_start+i)+".fts")
+    wget.download(global_urls1[i],out = temp_path+str(global_start+i)+".fts")
 
 def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
     now  = datetime.now()
@@ -25,21 +36,15 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
     cnt = 0
     for i in range(0,duration):
         next_date = str(now.year)+"/"+str('%02d' % now.month)+"/"+str('%02d' % now.day)
-
-        url_next = "https://sdo.oma.be/data/aia_quicklook_image/"+next_date+"/"
-        soup = BeautifulSoup(requests.get(url_next).text, 'html.parser').find_all('tr')[3:-1]
+        # https://sdo.oma.be/data/aia_quicklook/0193/2026/01/20/
+        url_next = "https://sdo.oma.be/data/aia_quicklook/0193/"+next_date+"/"
+        soup = BeautifulSoup(requests.get(url_next).text, 'html.parser').find_all('a')
         urls = []
         for s in soup:
-            time_H = s.find_all("a")[0].get('href')
-            urls_next_hours = url_next + time_H
-            
-            soup = BeautifulSoup(requests.get(urls_next_hours).text, 'html.parser').find_all('tr')[3:-1]
-            
-            for s in soup:
-                lnk = urls_next_hours+s.find_all("a")[0].get('href')
-                if(lnk.endswith("0193.quicklook.png")):
-                    print(lnk)
-                    urls.append(lnk)
+            lnk = s.get('href')
+            if(lnk.endswith(".fits")):
+                urls.append(url_next+lnk)
+
         now = now - datetii.timedelta(days=1)
         list_im = []
         print(len(urls))
@@ -50,10 +55,29 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
         global global_start 
         global_start = cnt
 
-        pool= mp.get_context('fork').Pool(processes=12)
-        pool.map(multi_processes_dl, np.arange(0,len(urls),1))
-        pool.close()
-        pool.join()
+        # pool= mp.get_context('fork').Pool(processes=12)
+        # pool.map(multi_processes_dl, np.arange(0,len(urls),1))
+        # pool.close()
+        # pool.join()
+        sdoaia193 = matplotlib.colormaps['sdoaia193']
+        files = natsorted(glob.glob(temp_path+"/*"))
+        for f in files:
+            aiamap = sunpy.map.Map(f)
+            fig = plt.figure(frameon=False)
+            ax = plt.axes([0, 0, 1, 1])
+            # Disable the axis
+            ax.set_axis_off()
+           
+            norm = aiamap.plot_settings['norm']
+            norm.vmin, norm.vmax = np.percentile(aiamap.data, [5, 99.9])
+            ax.imshow(aiamap.data,
+                    norm=norm,
+                    cmap=aiamap.plot_settings['cmap'],
+                    origin="lower")
+            plt.savefig(f.replace("fts","png"))
+            plt.close("all")
+
+
         
         
            
