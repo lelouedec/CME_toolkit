@@ -49,8 +49,6 @@ def multi_processes_dl(i):
 
 def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
     now  = datetime.now() - datetii.timedelta(days=duration)
-    origin_now = now
-    img_list = []
     cnt = 0
     for i in range(0,duration):
         next_date = str(now.year)+"/"+str('%02d' % now.month)+"/"+str('%02d' % now.day)
@@ -63,7 +61,7 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
             if(lnk.endswith(".fits")):
                 urls.append(url_next+lnk)
 
-        now = now + datetii.timedelta(days=1)
+       
         list_im = []
         print(len(urls))
         
@@ -78,6 +76,7 @@ def get_last_x_days_SDO(duration=7,path_to_save="/perm/aswo/ops/corona/"):
         pool.close()
         pool.join()
         cnt =  + len(urls)
+        now = now + datetii.timedelta(days=1)
 
     # files = natsorted(glob.glob(temp_path+"/*.fits"))
     # for f in files:
